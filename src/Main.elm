@@ -26,7 +26,7 @@ port title =
 
 view : Maybe DataClip -> Html
 view maybeModel =
-  div [] [ h1 [] [ text "How is Srid feeling in the last 2 days?" ]
+  div [] [ h1 [] [ text "How has Srid been feeling in the past 2 days?" ]
          , case maybeModel of
             Nothing       -> em [] [ text "Loading..." ]
             Just dataClip -> viewDataClip dataClip

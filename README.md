@@ -6,7 +6,7 @@ What if there was a **real-time dashboard** of you? Your feelings, thoughts, nar
 
 [This dashboard](https://srid.herokuapp.com) currently displays the following information about the author (Srid):
 
-* How am I feeling in the last 2 days? Data comes from [Chronicle](https://github.com/srid/chronicle).
+* How have I been feeling in the past 2 days? Data comes from [Chronicle](https://github.com/srid/chronicle).
 
 ## Future
 
