@@ -25,43 +25,18 @@ pieChart segments =
       colors  = List.map .colr segments
       fracs = normalize numbers
       offsets = List.scanl (+) 0 fracs
+      labels  = List.map .label segments
   in
       collage 400 300 <|
-        List.concat (List.map3 (pieSlice 100) colors offsets fracs)
+        List.concat (List.map4 (pieSlice 100) colors offsets fracs labels)
         ++ [ filled white (circle 70) ]
-        ++ (legend segments)
 
-legend : List Segment -> List Form
-legend segments =
-  let
-    size       = List.length segments
-    xPositions = List.map toFloat <| List.repeat size 130
-    yPositions = List.map toFloat <| List.map ((*) 30) [1..size]
-    positions  = zip xPositions yPositions
-  in
-    List.concatMap (legendItem 50) <| zip segments positions
-
-legendItem : Float -> (Segment, (Float, Float)) -> List Form
-legendItem offset ({label, colr}, position) =
-  let
-    box =
-      square 30
-        |> filled colr
-        |> move position
-    lbl =
-      show label
-        |> toForm
-        |> move (offset + fst position, snd position)
-  in
-    [box, lbl]
-
-
-pieSlice : Float -> Color -> Float -> Float -> List Form
-pieSlice radius colr offset angle =
+pieSlice : Float -> Color -> Float -> Float -> String -> List Form
+pieSlice radius colr offset angle label =
   let makePoint t = fromPolar (radius, degrees (360 * offset + t))
   in
       [ filled colr <| polygon ((0,0) :: List.map makePoint[ 0 .. 360 * angle ])
-      , toForm (asPercent angle)
+      , toForm (show label)
           |> move (fromPolar (radius*1.25, turns (offset + angle/2)))
       ]
 

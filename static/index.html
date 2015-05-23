@@ -13061,8 +13061,7 @@ Elm.PieChart.make = function (_elm) {
    $Color = Elm.Color.make(_elm),
    $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
    $Graphics$Element = Elm.Graphics.Element.make(_elm),
-   $List = Elm.List.make(_elm),
-   $Util = Elm.Util.make(_elm);
+   $List = Elm.List.make(_elm);
    var normalize = function (xs) {
       return function () {
          var total = $List.sum(xs);
@@ -13078,10 +13077,11 @@ Elm.PieChart.make = function (_elm) {
       $Basics.toString($Basics.toFloat($Basics.truncate(fraction * 100))),
       "%"));
    };
-   var pieSlice = F4(function (radius,
+   var pieSlice = F5(function (radius,
    colr,
    offset,
-   angle) {
+   angle,
+   label) {
       return function () {
          var makePoint = function (t) {
             return $Basics.fromPolar({ctor: "_Tuple2"
@@ -13095,46 +13095,16 @@ Elm.PieChart.make = function (_elm) {
                              _L.range(0,360 * angle)))))
                              ,$Graphics$Collage.move($Basics.fromPolar({ctor: "_Tuple2"
                                                                        ,_0: radius * 1.25
-                                                                       ,_1: $Basics.turns(offset + angle / 2)}))($Graphics$Collage.toForm(asPercent(angle)))]);
+                                                                       ,_1: $Basics.turns(offset + angle / 2)}))($Graphics$Collage.toForm($Graphics$Element.show(label)))]);
       }();
    });
-   var legendItem = F2(function (offset,
-   _v0) {
-      return function () {
-         switch (_v0.ctor)
-         {case "_Tuple2":
-            return function () {
-                 var lbl = $Graphics$Collage.move({ctor: "_Tuple2"
-                                                  ,_0: offset + $Basics.fst(_v0._1)
-                                                  ,_1: $Basics.snd(_v0._1)})($Graphics$Collage.toForm($Graphics$Element.show(_v0._0.label)));
-                 var box = $Graphics$Collage.move(_v0._1)($Graphics$Collage.filled(_v0._0.colr)($Graphics$Collage.square(30)));
-                 return _L.fromArray([box,lbl]);
-              }();}
-         _U.badCase($moduleName,
-         "between lines 46 and 56");
-      }();
-   });
-   var legend = function (segments) {
-      return function () {
-         var size = $List.length(segments);
-         var xPositions = $List.map($Basics.toFloat)(A2($List.repeat,
-         size,
-         130));
-         var yPositions = $List.map($Basics.toFloat)(A2($List.map,
-         F2(function (x,y) {
-            return x * y;
-         })(30),
-         _L.range(1,size)));
-         var positions = A2($Util.zip,
-         xPositions,
-         yPositions);
-         return $List.concatMap(legendItem(50))(A2($Util.zip,
-         segments,
-         positions));
-      }();
-   };
    var pieChart = function (segments) {
       return function () {
+         var labels = A2($List.map,
+         function (_) {
+            return _.label;
+         },
+         segments);
          var colors = A2($List.map,
          function (_) {
             return _.colr;
@@ -13155,16 +13125,15 @@ Elm.PieChart.make = function (_elm) {
          return A2($Graphics$Collage.collage,
          400,
          300)(A2($Basics._op["++"],
-         $List.concat(A4($List.map3,
+         $List.concat(A5($List.map4,
          pieSlice(100),
          colors,
          offsets,
-         fracs)),
-         A2($Basics._op["++"],
+         fracs,
+         labels)),
          _L.fromArray([A2($Graphics$Collage.filled,
          $Color.white,
-         $Graphics$Collage.circle(70))]),
-         legend(segments))));
+         $Graphics$Collage.circle(70))])));
       }();
    };
    var view = function (segments) {
@@ -13182,8 +13151,6 @@ Elm.PieChart.make = function (_elm) {
                           ,Segment: Segment
                           ,view: view
                           ,pieChart: pieChart
-                          ,legend: legend
-                          ,legendItem: legendItem
                           ,pieSlice: pieSlice
                           ,asPercent: asPercent
                           ,normalize: normalize};
