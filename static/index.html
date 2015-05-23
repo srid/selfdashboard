@@ -4321,6 +4321,7 @@ Elm.Main.make = function (_elm) {
    $Color = Elm.Color.make(_elm),
    $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $Http = Elm.Http.make(_elm),
    $Json$Decode = Elm.Json.Decode.make(_elm),
    $List = Elm.List.make(_elm),
@@ -4366,7 +4367,7 @@ Elm.Main.make = function (_elm) {
                    break;}
               return _L.fromArray([]);}
          _U.badCase($moduleName,
-         "between lines 63 and 65");
+         "between lines 66 and 68");
       }();
    });
    var toPairs = function (dataClip) {
@@ -4386,7 +4387,7 @@ Elm.Main.make = function (_elm) {
                   case "terrible":
                   return $Color.red;}
                _U.badCase($moduleName,
-               "between lines 50 and 56");
+               "between lines 53 and 59");
             }();
          };
          var colors = A2($List.map,
@@ -4449,7 +4450,12 @@ Elm.Main.make = function (_elm) {
                            _L.fromArray([$Html.text("Loading...")]));}
                       _U.badCase($moduleName,
                       "between lines 29 and 32");
-                   }()]));
+                   }()
+                   ,A2($Html.p,
+                   _L.fromArray([]),
+                   _L.fromArray([A2($Html.a,
+                   _L.fromArray([$Html$Attributes.href("https://github.com/srid/selfdashboard")]),
+                   _L.fromArray([$Html.text("More information")]))]))]));
    };
    var main = A2($Signal.map,
    view,

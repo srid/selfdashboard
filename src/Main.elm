@@ -29,6 +29,9 @@ view maybeModel =
          , case maybeModel of
             Nothing       -> em [] [ text "Loading..." ]
             Just dataClip -> viewDataClip dataClip
+         , p [] [ a [ href "https://github.com/srid/selfdashboard" ]
+                    [ text "More information"]
+                ]
          ]
 
 viewDataClip : DataClip -> Html
