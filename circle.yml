@@ -7,6 +7,6 @@ test:
 
 deployment:
   production:
-    branch: circleci_heroku
+    branch: master
     heroku:
       appname: srid
