@@ -1,0 +1,12 @@
+# This is the configuration file for circleci.com (CI which builds the site)
+
+# Compile pages during the test stage
+test:
+  post:
+    - make
+
+deployment:
+  production:
+    branch: circleci_heroku
+    heroku:
+      appname: srid
