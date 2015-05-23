@@ -1,9 +1,9 @@
 all:	static/index.html	build/selfdashboard
 	@true
 
-static/index.html:	Main.elm
+static/index.html:	src/*.elm
 	elm package install
-	elm make Main.elm --output static/index.html
+	elm make src/Main.elm --output static/index.html
 
 build/selfdashboard:	*.go
 	gofmt -w .
