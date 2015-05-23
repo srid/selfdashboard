@@ -52,6 +52,10 @@ func decode(data []byte) (*DataClip, error) {
 	return &dataClip, err
 }
 
+func (clip *DataClip) encode() ([]byte, error) {
+	return json.Marshal(clip)
+}
+
 func fetch(url string) (*DataClip, error) {
 	if response, err := http.Get(url); err != nil {
 		return nil, err

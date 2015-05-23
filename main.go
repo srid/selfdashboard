@@ -15,7 +15,12 @@ func handleAPI(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		httpError(w, err)
 	} else {
-		fmt.Fprintf(w, "%+v", dataClip)
+		data, err := dataClip.encode()
+		if err != nil {
+			httpError(w, err)
+		} else {
+			fmt.Fprintf(w, "%s", string(data))
+		}
 	}
 }
 
