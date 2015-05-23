@@ -4318,6 +4318,7 @@ Elm.Main.make = function (_elm) {
    _L = _N.List.make(_elm),
    $moduleName = "Main",
    $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Http = Elm.Http.make(_elm),
    $Json$Decode = Elm.Json.Decode.make(_elm),
@@ -4329,16 +4330,21 @@ Elm.Main.make = function (_elm) {
    y) {
       return x(y);
    }));
+   var withErrorLogging = function (task) {
+      return A2($Task.mapError,
+      $Debug.log("[TASK ERROR]"),
+      task);
+   };
    var model = $Signal.mailbox($Maybe.Nothing);
-   var dataClipUrl = "https://dataclips.heroku.com/zeitqcftkvfinkxxbhjvznzugbqj.json";
+   var dataClipUrl = "/api";
    var decodePair = A3($Json$Decode.tuple2,
    F2(function (v0,v1) {
       return {ctor: "_Tuple2"
              ,_0: v0
              ,_1: v1};
    }),
-   $Json$Decode.$int,
-   $Json$Decode.string);
+   $Json$Decode.string,
+   $Json$Decode.$int);
    var DataClip = F3(function (a,
    b,
    c) {
@@ -4363,11 +4369,11 @@ Elm.Main.make = function (_elm) {
    var fetch = A2($Http.get,
    decodeDataClip,
    dataClipUrl);
-   var mainTask = A2($Task.andThen,
+   var mainTask = withErrorLogging(A2($Task.andThen,
    fetch,
    function ($) {
       return $Signal.send(model.address)($Maybe.Just($));
-   });
+   }));
    var mainPort = Elm.Native.Task.make(_elm).performSignal("mainPort",
    function (_) {
       return _.signal;
@@ -4388,7 +4394,7 @@ Elm.Main.make = function (_elm) {
               _L.fromArray([]),
               _L.fromArray([$Html.text("nothing to show")]));}
          _U.badCase($moduleName,
-         "between lines 20 and 22");
+         "between lines 21 and 23");
       }();
    };
    var main = A2($Signal.map,
@@ -4404,6 +4410,7 @@ Elm.Main.make = function (_elm) {
                       ,mainTask: mainTask
                       ,model: model
                       ,main: main
+                      ,withErrorLogging: withErrorLogging
                       ,andMap: andMap};
    return _elm.Main.values;
 };Elm.Maybe = Elm.Maybe || {};

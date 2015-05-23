@@ -7,6 +7,7 @@ import Task
 import Task exposing (Task, andThen)
 import Json.Decode  as J
 import Json.Decode exposing ((:=))
+import Debug exposing (log)
 
 import Http
 import Html exposing (..)
@@ -26,7 +27,7 @@ view maybeModel =
 type alias DataClip =
   { fields : List String
   , types  : List Int
-  , values : List (Int, String)
+  , values : List (String, Int)
   }
 
 -- JSON decoder
@@ -37,15 +38,14 @@ decodeDataClip = DataClip
   `andMap` ("types"    := J.list J.int)
   `andMap` ("values"   := J.list decodePair)
 
-decodePair : J.Decoder (Int, String)
-decodePair = J.tuple2 (,) J.int J.string
+decodePair : J.Decoder (String, Int)
+decodePair = J.tuple2 (,) J.string J.int
 
 -- Fetching
 
 dataClipUrl : String
-dataClipUrl = "https://dataclips.heroku.com/zeitqcftkvfinkxxbhjvznzugbqj.json"
+dataClipUrl = "/api"
 
--- FIXME: CORS prevention for some reason.
 fetch : Task Http.Error DataClip
 fetch =
   Http.get decodeDataClip dataClipUrl
@@ -54,7 +54,9 @@ fetch =
 
 mainTask : Task Http.Error ()
 mainTask =
-  fetch `andThen` (Just >> Signal.send model.address)
+  withErrorLogging
+    <| fetch
+      `andThen` (Just >> Signal.send model.address)
 
 model : Mailbox (Maybe DataClip)
 model =
@@ -67,6 +69,10 @@ port mainPort =
 main : Signal Html
 main =
   Signal.map view model.signal
+
+withErrorLogging : Task x a -> Task x a
+withErrorLogging task =
+  Task.mapError (log "[TASK ERROR]") task
 
 -- Utility
 

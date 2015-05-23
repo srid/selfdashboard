@@ -11,16 +11,11 @@ func handleAPI(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		httpError(w, err)
 	}
-	dataClip, err := fetch(url)
+	data, err := fetch(url)
 	if err != nil {
 		httpError(w, err)
 	} else {
-		data, err := dataClip.encode()
-		if err != nil {
-			httpError(w, err)
-		} else {
-			fmt.Fprintf(w, "%s", string(data))
-		}
+		fmt.Fprintf(w, "%s", string(data))
 	}
 }
 
