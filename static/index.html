@@ -4366,7 +4366,7 @@ Elm.Main.make = function (_elm) {
                    break;}
               return _L.fromArray([]);}
          _U.badCase($moduleName,
-         "between lines 59 and 61");
+         "between lines 63 and 65");
       }();
    });
    var toPairs = function (dataClip) {
@@ -4386,7 +4386,7 @@ Elm.Main.make = function (_elm) {
                   case "terrible":
                   return $Color.red;}
                _U.badCase($moduleName,
-               "between lines 46 and 52");
+               "between lines 50 and 56");
             }();
          };
          var colors = A2($List.map,
@@ -4448,12 +4448,17 @@ Elm.Main.make = function (_elm) {
                            _L.fromArray([]),
                            _L.fromArray([$Html.text("Loading...")]));}
                       _U.badCase($moduleName,
-                      "between lines 25 and 28");
+                      "between lines 29 and 32");
                    }()]));
    };
    var main = A2($Signal.map,
    view,
    model.signal);
+   var title = Elm.Native.Port.make(_elm).outbound("title",
+   function (v) {
+      return v;
+   },
+   "Srid\'s dashboard");
    _elm.Main.values = {_op: _op
                       ,view: view
                       ,viewDataClip: viewDataClip

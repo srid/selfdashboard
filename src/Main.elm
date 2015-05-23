@@ -19,6 +19,10 @@ import PieChart
 
 -- View
 
+port title : String
+port title =
+  "Srid's dashboard"
+
 view : Maybe DataClip -> Html
 view maybeModel =
   div [] [ h1 [] [ text "How is Srid feeling in the last 2 days?" ]
