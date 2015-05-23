@@ -14,4 +14,4 @@ run:	static/index.html	build/selfdashboard
 	PATH=./build:${PATH} forego start
 
 deploy:
-	output=$(git status --porcelain) && [ -z "$output" ] && git push heroku master
+	output=$(git status --porcelain) && [ -z "${output}" ] && git push heroku master
