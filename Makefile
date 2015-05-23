@@ -12,3 +12,6 @@ build/selfdashboard:	main.go
 run:	static/index.html	build/selfdashboard
 	go get github.com/ddollar/forego
 	PATH=./build:${PATH} forego start
+
+deploy:
+	output=$(git status --porcelain) && [ -z "${output}" ] && git push -f heroku master

@@ -1,0 +1,19 @@
+{
+  "name": "Self dashboard",
+  "description": "This app does one little thing, and does it well.",
+  "keywords": [
+    "personal",
+    "psychology"
+  ],
+  "website": "https://www.srid.ca/",
+  "repository": "https://github.com/srid/selfdashboard",
+  "env": {
+    "BUILDPACK_URL": "https://github.com/heroku/heroku-buildpack-go",
+    "DATACLIP_URL": {
+      "description": "URL of the Heroku Dataclip to load",
+      "value": ""
+    }
+  },
+  "addons": [
+  ]
+}
