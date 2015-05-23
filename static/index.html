@@ -4318,12 +4318,14 @@ Elm.Main.make = function (_elm) {
    _L = _N.List.make(_elm),
    $moduleName = "Main",
    $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
    $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Http = Elm.Http.make(_elm),
    $Json$Decode = Elm.Json.Decode.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $PieChart = Elm.PieChart.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Task = Elm.Task.make(_elm);
    var andMap = $Json$Decode.object2(F2(function (x,
@@ -4345,6 +4347,56 @@ Elm.Main.make = function (_elm) {
    }),
    $Json$Decode.string,
    $Json$Decode.$int);
+   var zip = F2(function (listX,
+   listY) {
+      return function () {
+         var _v0 = {ctor: "_Tuple2"
+                   ,_0: listX
+                   ,_1: listY};
+         switch (_v0.ctor)
+         {case "_Tuple2":
+            switch (_v0._0.ctor)
+              {case "::": switch (_v0._1.ctor)
+                   {case "::":
+                      return A2($List._op["::"],
+                        {ctor: "_Tuple2"
+                        ,_0: _v0._0._0
+                        ,_1: _v0._1._0},
+                        A2(zip,_v0._0._1,_v0._1._1));}
+                   break;}
+              return _L.fromArray([]);}
+         _U.badCase($moduleName,
+         "between lines 59 and 61");
+      }();
+   });
+   var toPairs = function (dataClip) {
+      return function () {
+         var numbers = A2($List.map,
+         $Basics.snd,
+         dataClip.values);
+         var fieldToColor = function (field) {
+            return function () {
+               switch (field)
+               {case "bad":
+                  return $Color.orange;
+                  case "good": return $Color.blue;
+                  case "great":
+                  return $Color.green;
+                  case "meh": return $Color.grey;
+                  case "terrible":
+                  return $Color.red;}
+               _U.badCase($moduleName,
+               "between lines 46 and 52");
+            }();
+         };
+         var colors = A2($List.map,
+         function ($) {
+            return fieldToColor($Basics.fst($));
+         },
+         dataClip.values);
+         return A2(zip,colors,numbers);
+      }();
+   };
    var DataClip = F3(function (a,
    b,
    c) {
@@ -4378,40 +4430,26 @@ Elm.Main.make = function (_elm) {
    function (_) {
       return _.signal;
    }($Signal.mailbox(mainTask)));
-   var viewDataClip = function (_v0) {
-      return function () {
-         return function () {
-            var viewSomething = function (_v2) {
-               return function () {
-                  switch (_v2.ctor)
-                  {case "_Tuple2":
-                     return A2($Html.li,
-                       _L.fromArray([]),
-                       _L.fromArray([$Html.text(_v2._0)
-                                    ,$Html.text("=")
-                                    ,$Html.text($Basics.toString(_v2._1))]));}
-                  _U.badCase($moduleName,
-                  "between lines 29 and 33");
-               }();
-            };
-            return $Html.div(_L.fromArray([]))(A2($List.map,
-            viewSomething,
-            _v0.values));
-         }();
-      }();
+   var viewDataClip = function ($) {
+      return $Html.fromElement($PieChart.view(toPairs($)));
    };
    var view = function (maybeModel) {
-      return function () {
-         switch (maybeModel.ctor)
-         {case "Just":
-            return viewDataClip(maybeModel._0);
-            case "Nothing":
-            return A2($Html.em,
-              _L.fromArray([]),
-              _L.fromArray([$Html.text("Loading...")]));}
-         _U.badCase($moduleName,
-         "between lines 21 and 23");
-      }();
+      return A2($Html.div,
+      _L.fromArray([]),
+      _L.fromArray([A2($Html.h1,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text("How is Srid feeling in the last 2 days?")]))
+                   ,function () {
+                      switch (maybeModel.ctor)
+                      {case "Just":
+                         return viewDataClip(maybeModel._0);
+                         case "Nothing":
+                         return A2($Html.em,
+                           _L.fromArray([]),
+                           _L.fromArray([$Html.text("Loading...")]));}
+                      _U.badCase($moduleName,
+                      "between lines 25 and 28");
+                   }()]));
    };
    var main = A2($Signal.map,
    view,
@@ -4420,6 +4458,8 @@ Elm.Main.make = function (_elm) {
                       ,view: view
                       ,viewDataClip: viewDataClip
                       ,DataClip: DataClip
+                      ,toPairs: toPairs
+                      ,zip: zip
                       ,decodeDataClip: decodeDataClip
                       ,decodePair: decodePair
                       ,dataClipUrl: dataClipUrl
@@ -4502,6 +4542,36 @@ Elm.Maybe.make = function (_elm) {
                        ,Just: Just
                        ,Nothing: Nothing};
    return _elm.Maybe.values;
+};Elm.Mouse = Elm.Mouse || {};
+Elm.Mouse.make = function (_elm) {
+   "use strict";
+   _elm.Mouse = _elm.Mouse || {};
+   if (_elm.Mouse.values)
+   return _elm.Mouse.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Mouse",
+   $Basics = Elm.Basics.make(_elm),
+   $Native$Mouse = Elm.Native.Mouse.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var clicks = $Native$Mouse.clicks;
+   var isDown = $Native$Mouse.isDown;
+   var position = $Native$Mouse.position;
+   var x = A2($Signal.map,
+   $Basics.fst,
+   position);
+   var y = A2($Signal.map,
+   $Basics.snd,
+   position);
+   _elm.Mouse.values = {_op: _op
+                       ,position: position
+                       ,x: x
+                       ,y: y
+                       ,isDown: isDown
+                       ,clicks: clicks};
+   return _elm.Mouse.values;
 };Elm.Native.Array = {};
 Elm.Native.Array.make = function(localRuntime) {
 
@@ -8003,6 +8073,49 @@ Elm.Native.List.make = function(localRuntime) {
 	};
 	return localRuntime.Native.List.values = Elm.Native.List.values;
 
+};
+Elm.Native = Elm.Native || {};
+Elm.Native.Mouse = {};
+Elm.Native.Mouse.make = function(localRuntime) {
+
+	localRuntime.Native = localRuntime.Native || {};
+	localRuntime.Native.Mouse = localRuntime.Native.Mouse || {};
+	if (localRuntime.Native.Mouse.values)
+	{
+		return localRuntime.Native.Mouse.values;
+	}
+
+	var NS = Elm.Native.Signal.make(localRuntime);
+	var Utils = Elm.Native.Utils.make(localRuntime);
+
+	var position = NS.input('Mouse.position', Utils.Tuple2(0,0));
+
+	var isDown = NS.input('Mouse.isDown', false);
+
+	var clicks = NS.input('Mouse.clicks', Utils.Tuple0);
+
+	var node = localRuntime.isFullscreen()
+		? document
+		: localRuntime.node;
+
+	localRuntime.addListener([clicks.id], node, 'click', function click() {
+		localRuntime.notify(clicks.id, Utils.Tuple0);
+	});
+	localRuntime.addListener([isDown.id], node, 'mousedown', function down() {
+		localRuntime.notify(isDown.id, true);
+	});
+	localRuntime.addListener([isDown.id], node, 'mouseup', function up() {
+		localRuntime.notify(isDown.id, false);
+	});
+	localRuntime.addListener([position.id], node, 'mousemove', function move(e) {
+		localRuntime.notify(position.id, Utils.getXY(e));
+	});
+
+	return localRuntime.Native.Mouse.values = {
+		position: position,
+		isDown: isDown,
+		clicks: clicks
+	};
 };
 Elm.Native.Port = {};
 Elm.Native.Port.make = function(localRuntime) {
@@ -12858,7 +12971,169 @@ Elm.Native.VirtualDom.make = function(elm)
 },{"data-set":2,"dom-delegator":8,"vdom/create-element":18,"vdom/patch":24,"vtree/diff":26,"vtree/is-vhook":29,"vtree/vnode":36,"vtree/vtext":38}],40:[function(require,module,exports){
 
 },{}]},{},[39]);
-Elm.Result = Elm.Result || {};
+Elm.Native = Elm.Native || {};
+Elm.Native.Window = {};
+Elm.Native.Window.make = function(localRuntime) {
+
+	localRuntime.Native = localRuntime.Native || {};
+	localRuntime.Native.Window = localRuntime.Native.Window || {};
+	if (localRuntime.Native.Window.values)
+	{
+		return localRuntime.Native.Window.values;
+	}
+
+	var NS = Elm.Native.Signal.make(localRuntime);
+	var Tuple2 = Elm.Native.Utils.make(localRuntime).Tuple2;
+
+
+	function getWidth()
+	{
+		return localRuntime.node.clientWidth;
+	}
+
+
+	function getHeight()
+	{
+		if (localRuntime.isFullscreen())
+		{
+			return window.innerHeight;
+		}
+		return localRuntime.node.clientHeight;
+	}
+
+
+	var dimensions = NS.input('Window.dimensions', Tuple2(getWidth(), getHeight()));
+
+
+	function resizeIfNeeded()
+	{
+		// Do not trigger event if the dimensions have not changed.
+		// This should be most of the time.
+		var w = getWidth();
+		var h = getHeight();
+		if (dimensions.value._0 === w && dimensions.value._1 === h)
+		{
+			return;
+		}
+
+		setTimeout(function () {
+			// Check again to see if the dimensions have changed.
+			// It is conceivable that the dimensions have changed
+			// again while some other event was being processed.
+			var w = getWidth();
+			var h = getHeight();
+			if (dimensions.value._0 === w && dimensions.value._1 === h)
+			{
+				return;
+			}
+			localRuntime.notify(dimensions.id, Tuple2(w,h));
+		}, 0);
+	}
+
+
+	localRuntime.addListener([dimensions.id], window, 'resize', resizeIfNeeded);
+
+
+	return localRuntime.Native.Window.values = {
+		dimensions: dimensions,
+		resizeIfNeeded: resizeIfNeeded
+	};
+};
+Elm.PieChart = Elm.PieChart || {};
+Elm.PieChart.make = function (_elm) {
+   "use strict";
+   _elm.PieChart = _elm.PieChart || {};
+   if (_elm.PieChart.values)
+   return _elm.PieChart.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "PieChart",
+   $Basics = Elm.Basics.make(_elm),
+   $Color = Elm.Color.make(_elm),
+   $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
+   $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $List = Elm.List.make(_elm);
+   var normalize = function (xs) {
+      return function () {
+         var total = $List.sum(xs);
+         return A2($List.map,
+         function (x) {
+            return x / total;
+         },
+         xs);
+      }();
+   };
+   var asPercent = function (fraction) {
+      return $Graphics$Element.show(A2($Basics._op["++"],
+      $Basics.toString($Basics.toFloat($Basics.truncate(fraction * 100))),
+      "%"));
+   };
+   var pieSlice = F4(function (radius,
+   colr,
+   offset,
+   angle) {
+      return function () {
+         var makePoint = function (t) {
+            return $Basics.fromPolar({ctor: "_Tuple2"
+                                     ,_0: radius
+                                     ,_1: $Basics.degrees(360 * offset + t)});
+         };
+         return _L.fromArray([$Graphics$Collage.filled(colr)($Graphics$Collage.polygon(A2($List._op["::"],
+                             {ctor: "_Tuple2",_0: 0,_1: 0},
+                             A2($List.map,
+                             makePoint,
+                             _L.range(0,360 * angle)))))
+                             ,$Graphics$Collage.move($Basics.fromPolar({ctor: "_Tuple2"
+                                                                       ,_0: radius * 1.25
+                                                                       ,_1: $Basics.turns(offset + angle / 2)}))($Graphics$Collage.toForm(asPercent(angle)))]);
+      }();
+   });
+   var pieChart = F2(function (colors,
+   numbers) {
+      return function () {
+         var fracs = normalize(numbers);
+         var offsets = A3($List.scanl,
+         F2(function (x,y) {
+            return x + y;
+         }),
+         0,
+         fracs);
+         return A2($Graphics$Collage.collage,
+         300,
+         300)(A2($Basics._op["++"],
+         $List.concat(A4($List.map3,
+         pieSlice(100),
+         colors,
+         offsets,
+         fracs)),
+         _L.fromArray([A2($Graphics$Collage.filled,
+         $Color.white,
+         $Graphics$Collage.circle(70))])));
+      }();
+   });
+   var view = function (pairs) {
+      return function () {
+         var numbers = A2($List.map,
+         $Basics.snd,
+         pairs);
+         var colors = A2($List.map,
+         $Basics.fst,
+         pairs);
+         return pieChart(colors)(A2($List.map,
+         $Basics.toFloat,
+         numbers));
+      }();
+   };
+   _elm.PieChart.values = {_op: _op
+                          ,view: view
+                          ,pieChart: pieChart
+                          ,pieSlice: pieSlice
+                          ,asPercent: asPercent
+                          ,normalize: normalize};
+   return _elm.PieChart.values;
+};Elm.Result = Elm.Result || {};
 Elm.Result.make = function (_elm) {
    "use strict";
    _elm.Result = _elm.Result || {};
@@ -13836,4 +14111,30 @@ Elm.VirtualDom.make = function (_elm) {
                             ,lazy2: lazy2
                             ,lazy3: lazy3};
    return _elm.VirtualDom.values;
+};Elm.Window = Elm.Window || {};
+Elm.Window.make = function (_elm) {
+   "use strict";
+   _elm.Window = _elm.Window || {};
+   if (_elm.Window.values)
+   return _elm.Window.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Window",
+   $Basics = Elm.Basics.make(_elm),
+   $Native$Window = Elm.Native.Window.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var dimensions = $Native$Window.dimensions;
+   var width = A2($Signal.map,
+   $Basics.fst,
+   dimensions);
+   var height = A2($Signal.map,
+   $Basics.snd,
+   dimensions);
+   _elm.Window.values = {_op: _op
+                        ,dimensions: dimensions
+                        ,width: width
+                        ,height: height};
+   return _elm.Window.values;
 };</script></head><body><script type="text/javascript">Elm.fullscreen(Elm.Main)</script></body></html>

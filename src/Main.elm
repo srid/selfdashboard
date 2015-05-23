@@ -1,6 +1,7 @@
 -- A program to display how one is feeling overall in the last 2 days.
 -- Data is fetched from Heroku Dataclips.
 
+import Color
 import Signal
 import Signal exposing (Signal, Mailbox)
 import Task
@@ -13,27 +14,22 @@ import Http
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
+import PieChart
+
 
 -- View
 
 view : Maybe DataClip -> Html
 view maybeModel =
-  case maybeModel of
-    Nothing       -> em [] [ text "Loading..." ]
-    Just dataClip -> viewDataClip dataClip
+  div [] [ h1 [] [ text "How is Srid feeling in the last 2 days?" ]
+         , case maybeModel of
+            Nothing       -> em [] [ text "Loading..." ]
+            Just dataClip -> viewDataClip dataClip
+         ]
 
 viewDataClip : DataClip -> Html
-viewDataClip {fields, types, values} =
-  let
-    viewSomething (how, count) =
-      li []
-      [ text how
-      , text "="
-      , text <| toString count
-      ]
-  in
-    div [] <|
-      List.map viewSomething values
+viewDataClip =
+  fromElement << PieChart.view << toPairs
 
 -- Dataclip
 
@@ -42,6 +38,27 @@ type alias DataClip =
   , types  : List Int
   , values : List (String, Int)
   }
+
+toPairs : DataClip -> List (Color.Color, Int)
+toPairs dataClip =
+  let
+    fieldToColor field =
+      case field of
+        "great"    -> Color.green
+        "good"     -> Color.blue
+        "meh"      -> Color.grey
+        "bad"      -> Color.orange
+        "terrible" -> Color.red
+    colors  = List.map (fieldToColor << fst) dataClip.values
+    numbers = List.map snd dataClip.values
+    in
+        zip colors numbers
+
+zip : List a -> List b -> List (a,b)
+zip listX listY =
+  case (listX, listY) of
+    (x::xs, y::ys) -> (x,y) :: zip xs ys
+    (  _  ,   _  ) -> []
 
 -- JSON decoder
 
