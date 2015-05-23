@@ -5,7 +5,7 @@ static/index.html:	Main.elm
 	elm package install
 	elm make Main.elm --output static/index.html
 
-build/selfdashboard:	main.go
+build/selfdashboard:	*.go
 	gofmt -w .
 	go build -o build/selfdashboard .
 
