@@ -14,6 +14,7 @@ import Http
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
+import Util exposing (zip, zip3)
 import PieChart
 
 
@@ -36,7 +37,7 @@ view maybeModel =
 
 viewDataClip : DataClip -> Html
 viewDataClip =
-  fromElement << PieChart.view << toPairs
+  fromElement << PieChart.view << toSegments
 
 -- Dataclip
 
@@ -46,8 +47,8 @@ type alias DataClip =
   , values : List (String, Int)
   }
 
-toPairs : DataClip -> List (Color.Color, Int)
-toPairs dataClip =
+toSegments : DataClip -> List PieChart.Segment
+toSegments dataClip =
   let
     fieldToColor field =
       case field of
@@ -56,16 +57,15 @@ toPairs dataClip =
         "meh"      -> Color.grey
         "bad"      -> Color.orange
         "terrible" -> Color.red
-    colors  = List.map (fieldToColor << fst) dataClip.values
-    numbers = List.map snd dataClip.values
+    numbers      = List.map (toFloat << snd) dataClip.values
+    labels       = List.map fst dataClip.values
+    colors       = List.map fieldToColor labels
     in
-        zip colors numbers
+        List.map makeSegment <| zip3 labels colors numbers
 
-zip : List a -> List b -> List (a,b)
-zip listX listY =
-  case (listX, listY) of
-    (x::xs, y::ys) -> (x,y) :: zip xs ys
-    (  _  ,   _  ) -> []
+makeSegment : (String, Color.Color, Float) -> PieChart.Segment
+makeSegment (label, colr, value) =
+  { label=label, colr=colr, value=value }
 
 -- JSON decoder
 
