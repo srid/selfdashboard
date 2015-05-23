@@ -7,7 +7,16 @@ import (
 )
 
 func handleAPI(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "hi there")
+	url, err := getDataClipUrl()
+	if err != nil {
+		fmt.Fprintf(w, "opps: %v", err)
+	}
+	dataClip, err := fetch(url)
+	if err != nil {
+		fmt.Fprintf(w, "opps: %v", err)
+	} else {
+		fmt.Fprintf(w, "ok: %+v", dataClip)
+	}
 }
 
 func main() {
@@ -23,4 +32,12 @@ func getPort() string {
 		port = "4000"
 	}
 	return port
+}
+
+func getDataClipUrl() (string, error) {
+	url := os.Getenv("DATACLIP_URL")
+	if url == "" {
+		return "", fmt.Errorf("DATACLIP_URL is not specified")
+	}
+	return url, nil
 }
