@@ -8,16 +8,19 @@ import (
 
 func handleAPI(w http.ResponseWriter, r *http.Request) {
 	url, err := getDataClipUrl()
-	// TODO: return http error code properly
 	if err != nil {
-		fmt.Fprintf(w, "opps: %v", err)
+		httpError(w, err)
 	}
 	dataClip, err := fetch(url)
 	if err != nil {
-		fmt.Fprintf(w, "opps: %v", err)
+		httpError(w, err)
 	} else {
 		fmt.Fprintf(w, "%+v", dataClip)
 	}
+}
+
+func httpError(w http.ResponseWriter, err error) {
+	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 
 func main() {
