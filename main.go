@@ -1,7 +1,11 @@
+// Just a Go proxy to successfully fetch the Heroku DataClip
+// Beacuse, I am unable to do this directly from Elm due to CORS restriction.
+// ... for whatever reason.
 package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -44,4 +48,13 @@ func getDataClipUrl() (string, error) {
 		return "", fmt.Errorf("DATACLIP_URL is not specified")
 	}
 	return url, nil
+}
+
+func fetch(url string) ([]byte, error) {
+	if response, err := http.Get(url); err != nil {
+		return nil, err
+	} else {
+		defer response.Body.Close()
+		return ioutil.ReadAll(response.Body)
+	}
 }

@@ -19,8 +19,21 @@ import Html.Attributes exposing (..)
 view : Maybe DataClip -> Html
 view maybeModel =
   case maybeModel of
-    Nothing       -> em [] [ text "nothing to show" ]
-    Just dataClip -> div [] <| List.map (\f -> b [] [ text f ]) dataClip.fields
+    Nothing       -> em [] [ text "Loading..." ]
+    Just dataClip -> viewDataClip dataClip
+
+viewDataClip : DataClip -> Html
+viewDataClip {fields, types, values} =
+  let
+    viewSomething (how, count) =
+      li []
+      [ text how
+      , text "="
+      , text <| toString count
+      ]
+  in
+    div [] <|
+      List.map viewSomething values
 
 -- Dataclip
 

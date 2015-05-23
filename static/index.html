@@ -4378,21 +4378,37 @@ Elm.Main.make = function (_elm) {
    function (_) {
       return _.signal;
    }($Signal.mailbox(mainTask)));
+   var viewDataClip = function (_v0) {
+      return function () {
+         return function () {
+            var viewSomething = function (_v2) {
+               return function () {
+                  switch (_v2.ctor)
+                  {case "_Tuple2":
+                     return A2($Html.li,
+                       _L.fromArray([]),
+                       _L.fromArray([$Html.text(_v2._0)
+                                    ,$Html.text("=")
+                                    ,$Html.text($Basics.toString(_v2._1))]));}
+                  _U.badCase($moduleName,
+                  "between lines 29 and 33");
+               }();
+            };
+            return $Html.div(_L.fromArray([]))(A2($List.map,
+            viewSomething,
+            _v0.values));
+         }();
+      }();
+   };
    var view = function (maybeModel) {
       return function () {
          switch (maybeModel.ctor)
          {case "Just":
-            return $Html.div(_L.fromArray([]))(A2($List.map,
-              function (f) {
-                 return A2($Html.b,
-                 _L.fromArray([]),
-                 _L.fromArray([$Html.text(f)]));
-              },
-              maybeModel._0.fields));
+            return viewDataClip(maybeModel._0);
             case "Nothing":
             return A2($Html.em,
               _L.fromArray([]),
-              _L.fromArray([$Html.text("nothing to show")]));}
+              _L.fromArray([$Html.text("Loading...")]));}
          _U.badCase($moduleName,
          "between lines 21 and 23");
       }();
@@ -4402,6 +4418,7 @@ Elm.Main.make = function (_elm) {
    model.signal);
    _elm.Main.values = {_op: _op
                       ,view: view
+                      ,viewDataClip: viewDataClip
                       ,DataClip: DataClip
                       ,decodeDataClip: decodeDataClip
                       ,decodePair: decodePair
